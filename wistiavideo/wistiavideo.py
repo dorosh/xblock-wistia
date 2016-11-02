@@ -70,7 +70,7 @@ class WistiaVideoXBlock(StudioEditableXBlockMixin, XBlock):
         """
         if 'youtube' in self.href:
             html = self.resource_string('static/html/youtube.html')
-            frag = Fragment(html.format(self=self))
+            frag = Fragment(html)
             frag.add_css(self.resource_string(
                 'static/node_modules/video.js/dist/video-js.min.css'
             ))
