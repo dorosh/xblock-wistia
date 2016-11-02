@@ -20,6 +20,8 @@ _ = lambda text: text
 # https://wistia.com/doc/construct-an-embed-code#the_regex
 VIDEO_URL_RE = re.compile(r'https?:\/\/(.+)?(wistia.com|wi.st)\/(medias|embed)\/.*')
 
+YOUTUBE_VIDEO_URL_RE = re.compile(r'https?:\/\/(.+)?(wistia.com|wi.st)\/(medias|embed)\/.*')
+
 
 class WistiaVideoXBlock(StudioEditableXBlockMixin, XBlock):
 
@@ -50,7 +52,7 @@ class WistiaVideoXBlock(StudioEditableXBlockMixin, XBlock):
         return ''
 
     def validate_field_data(self, validation, data):
-        if data.href != '' and not VIDEO_URL_RE.match(data.href):
+        if data.href === '':# and not VIDEO_URL_RE.match(data.href):
             validation.add(ValidationMessage(
                 ValidationMessage.ERROR,
                 _(u"Incorrect video url, please recheck")
@@ -66,9 +68,16 @@ class WistiaVideoXBlock(StudioEditableXBlockMixin, XBlock):
         The primary view of the WistiaVideoXBlock, shown to students
         when viewing courses.
         """
-        html = self.resource_string('static/html/wistiavideo.html')
-        frag = Fragment(html.format(self=self))
-        frag.add_css(self.resource_string('static/css/wistiavideo.css'))
+        if 'youtube' in self.href:
+            html = self.resource_string('static/html/youtube.html')
+            frag = Fragment(html.format(self=self))
+            frag.add_css(self.resource_string(
+                'static/node_modules/video.js/dist/video-js.min.css'
+            ))
+        else:
+            html = self.resource_string('static/html/wistiavideo.html')
+            frag = Fragment(html.format(self=self))
+            frag.add_css(self.resource_string('static/css/wistiavideo.css'))
         return frag
 
     @staticmethod
